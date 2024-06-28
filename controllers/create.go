@@ -23,7 +23,7 @@ func CreateUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse validated user from context"})
 		return
 	}
-	
+
 	//validations
 	if !isValidName(users.FULLNAME) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Name must contain only alphabetic characters"})
@@ -39,9 +39,9 @@ func CreateUser(c *gin.Context) {
 	}
 
 	// Insert into database
-	result, err := config.DB.Exec("INSERT INTO user (ID,FULLNAME, PHONE, EMAIL, CITY) VALUES (?, ?, ?, ?, ?)", users.ID, users.FULLNAME, users.PHONE, users.EMAIL, users.CITY)
-	
-	//result, err := config.DB.Exec("INSERT INTO user (ID, FULLNAME, PHONE, EMAIL, CITY)  VALUES (?, ?, AES_ENCRYPT(?, '9000'), AES_ENCRYPT(?, '9000'), ?)", users.ID, users.FULLNAME, users.PHONE, users.EMAIL, users.CITY)
+	//result, err := config.DB.Exec("INSERT INTO user (ID,FULLNAME, PHONE, EMAIL, CITY) VALUES (?, ?, ?, ?, ?)", users.ID, users.FULLNAME, users.PHONE, users.EMAIL, users.CITY)
+
+	result, err := config.DB.Exec("INSERT INTO encuser (ID, FULLNAME, PHONE, EMAIL, CITY)  VALUES (?, ?, AES_ENCRYPT(?, '9000'), AES_ENCRYPT(?, '9000'), ?)", users.ID, users.FULLNAME, users.PHONE, users.EMAIL, users.CITY)
 
 	if err != nil {
 		log.Println("Error inserting user into database:", err)

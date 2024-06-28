@@ -30,8 +30,8 @@ func GetUserByID(c *gin.Context) {
 
 	// Execute the SQL query to retrieve all users from the database and store them in the users slice.
 
-	//rows, err := config.DB.Query("SELECT ID, FULLNAME, convert(AES_DECRYPT(PHONE,'9000')using utf8) as PHONE, convert(AES_DECRYPT(EMAIL,'9000')using utf8) as EMAIL, CITY from user where ID =?", id)
-	rows, err := config.DB.Query("SELECT ID, FULLNAME, PHONE, EMAIL, CITY from user where ID =?", id)
+	rows, err := config.DB.Query("SELECT ID, FULLNAME, convert(ifnull(AES_DECRYPT(PHONE,'9000'),'')using utf8) as PHONE, convert(AES_DECRYPT(EMAIL,'9000')using utf8) as EMAIL, CITY from encuser where ID =?", id)
+	//rows, err := config.DB.Query("SELECT ID, FULLNAME, PHONE, EMAIL, CITY from user where ID =?", id)
 
 	if err != nil {
 		log.Println("Error querying users from database:", err)

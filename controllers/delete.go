@@ -19,7 +19,7 @@ func DeleteUser(c *gin.Context) {
 	}
 
 	// Delete from database
-	_, err = config.DB.Exec("DELETE FROM user WHERE ID=?", id)
+	_, err = config.DB.Exec("DELETE FROM encuser WHERE ID=?", id)
 	if err != nil {
 		log.Println("Error deleting user from database:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error deleting user from database"})

@@ -15,13 +15,13 @@ func SetupRouter() *gin.Engine {
 	// Define routes
 	// Apply middleware to relevant routes
 
-	// Grouping routes	
+	// Grouping routes
 	usersRouter := router.Group("/users")
 	{
 		usersRouter.POST("/", middlewares.CheckPhoneNumberExistsMiddleware(), controllers.CreateUser)
 		usersRouter.PUT("/:id", middlewares.CheckPhoneNumberExistsMiddleware(), controllers.UpdateUser)
 		usersRouter.DELETE("/:id", controllers.DeleteUser)
-		usersRouter.GET("/", controllers.GetUsers)	
+		usersRouter.GET("/", controllers.GetUsers)
 	}
 	router.GET("/user/:id", controllers.GetUserByID)
 

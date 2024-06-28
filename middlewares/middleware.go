@@ -21,9 +21,9 @@ func CheckPhoneNumberExistsMiddleware() gin.HandlerFunc {
 
 		// Check if the phone number already exists
 		var count int
-		err := config.DB.QueryRow("SELECT COUNT(*) FROM user WHERE PHONE = ?", users.PHONE).Scan(&count)
+		//err := config.DB.QueryRow("SELECT COUNT(*) FROM user WHERE PHONE = ?", users.PHONE).Scan(&count)
 
-		//err := config.DB.QueryRow("SELECT COUNT(*) FROM user WHERE convert(AES_DECRYPT(PHONE,'9000')using utf8) = ?", users.PHONE).Scan(&count)
+		err := config.DB.QueryRow("SELECT COUNT(*) FROM encuser WHERE convert(AES_DECRYPT(PHONE,'9000')using utf8) = ?", users.PHONE).Scan(&count)
 		if err != nil {
 			log.Println("Error checking phone number existence:", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error checking phone number existence"})

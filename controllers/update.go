@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"leadAPI/config"
 	"leadAPI/models"
 	"log"
@@ -28,6 +29,7 @@ func UpdateUser(c *gin.Context) {
 
 	// Parse the validated user from the context
 	user, ok := validatedUser.(*models.User)
+	fmt.Println(user)
 	if !ok {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse validated user from context"})
 		return
@@ -37,26 +39,23 @@ func UpdateUser(c *gin.Context) {
 	if user.FULLNAME != "" {
 		if !isValidName(user.FULLNAME) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Name must contain only alphabetic characters"})
-			return
 		}
 		updateFullName(id, user.FULLNAME, c)
-	} else if user.PHONE != "" {
+	}
+	if user.PHONE != "" {
 		if !isValidPhoneNumber(user.PHONE) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Phone number must be 10 digits and contain only numeric characters"})
-			return
 		}
 		updatePhoneNumber(id, user.PHONE, c)
-	} else if user.EMAIL != "" {
+	}
+	if user.EMAIL != "" {
 		if !isValidEmail(user.EMAIL) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Email address is not in a valid format"})
-			return
 		}
 		updateEmail(id, user.EMAIL, c)
-	} else if user.CITY != "" {
+	}
+	if user.CITY != "" {
 		updateCity(id, user.CITY, c)
-	} else {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No fields provided to update"})
-		return
 	}
 
 	// Fetch the updated user from the database
@@ -65,7 +64,10 @@ func UpdateUser(c *gin.Context) {
 }
 
 func updateFullName(id int, fullName string, c *gin.Context) {
-	_, err := config.DB.Exec("UPDATE user SET FULLNAME=? WHERE ID=?", fullName, id)
+	fmt.Println(id)
+	fmt.Println(fullName)
+
+	_, err := config.DB.Exec("UPDATE encuser SET FULLNAME=? WHERE ID=?", fullName, id)
 	if err != nil {
 		log.Println("Error updating user's full name in database:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating user's full name in database"})
@@ -74,7 +76,8 @@ func updateFullName(id int, fullName string, c *gin.Context) {
 }
 
 func updatePhoneNumber(id int, phoneNumber string, c *gin.Context) {
-	_, err := config.DB.Exec("UPDATE user SET PHONE=? WHERE ID=?", phoneNumber, id)
+	fmt.Println(phoneNumber)
+	_, err := config.DB.Exec("UPDATE encuser SET PHONE = AES_ENCRYPT(?, '9000') WHERE ID=?", phoneNumber, id)
 	if err != nil {
 		log.Println("Error updating user's phone number in database:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating user's phone number in database"})
@@ -83,8 +86,9 @@ func updatePhoneNumber(id int, phoneNumber string, c *gin.Context) {
 }
 
 func updateEmail(id int, email string, c *gin.Context) {
-	//_, err := config.DB.Exec("UPDATE user SET EMAIL = AES_ENCRYPT(?, '9000') WHERE ID=?", email, id)
-	_, err := config.DB.Exec("UPDATE user SET EMAIL = ? WHERE ID=?", email, id)
+	fmt.Println(email)
+	_, err := config.DB.Exec("UPDATE encuser SET EMAIL = AES_ENCRYPT(?, '9000') WHERE ID=?", email, id)
+	//_, err := config.DB.Exec("UPDATE user SET EMAIL = ? WHERE ID=?", email, id)
 	if err != nil {
 		log.Println("Error updating user's email in database:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating user's email in database"})
@@ -93,7 +97,8 @@ func updateEmail(id int, email string, c *gin.Context) {
 }
 
 func updateCity(id int, city string, c *gin.Context) {
-	_, err := config.DB.Exec("UPDATE user SET CITY=? WHERE ID=?", city, id)
+	fmt.Println(city)
+	_, err := config.DB.Exec("UPDATE encuser SET CITY=? WHERE ID=?", city, id)
 	if err != nil {
 		log.Println("Error updating user's city in database:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating user's city in database"})

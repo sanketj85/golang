@@ -40,8 +40,8 @@ func GetUsers(c *gin.Context) {
 	var users []models.User
 
 	// Execute the SQL query with pagination and store the result in the users slice.
-	query := "SELECT ID, FULLNAME, PHONE, EMAIL, CITY FROM user LIMIT ? OFFSET ?"
-	//query := "SELECT ID, FULLNAME, convert(AES_DECRYPT(PHONE,'9000')using utf8) as PHONE, convert(AES_DECRYPT(EMAIL,'9000')using utf8) as EMAIL, CITY from user LIMIT? OFFSET?"
+	//query := "SELECT ID, FULLNAME, PHONE, EMAIL, CITY FROM user LIMIT ? OFFSET ?"
+	query := "SELECT ID, FULLNAME, convert(ifnull(AES_DECRYPT(PHONE,'9000'),'')using utf8) as PHONE, convert(ifnull(AES_DECRYPT(EMAIL,'9000'),'')using utf8) as EMAIL, CITY from encuser LIMIT? OFFSET?"
 	rows, err := config.DB.Query(query, pageSize, offset)
 	if err != nil {
 		log.Println("Error querying users from database:", err)
@@ -73,6 +73,6 @@ func GetUsers(c *gin.Context) {
 		"users":      users,
 		"page":       page,
 		"pageSize":   pageSize,
-		"totalCount": len(users), 
+		"totalCount": len(users),
 	})
 }

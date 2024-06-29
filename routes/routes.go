@@ -24,6 +24,9 @@ func SetupRouter() *gin.Engine {
 		usersRouter.GET("/", controllers.GetUsers)
 	}
 	router.GET("/user/:id", controllers.GetUserByID)
+	router.POST("/upload", controllers.UploadFile)
+	router.GET("/files", controllers.GetUploadedFiles)
+	router.GET("/files/:filename", controllers.DownloadFile)
 
 	return router
 }

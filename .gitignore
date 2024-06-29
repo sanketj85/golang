@@ -1,2 +1,9 @@
 *.mod
-*.sum
+*.sumsendgrid.env
+sendgrid.env
+sendgrid.env
+export uploads
+upload
+uploads
+go.mod
+go.sum
